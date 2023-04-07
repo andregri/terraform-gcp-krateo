@@ -6,6 +6,11 @@ variable "cluster_name" {
   description = "cluster name"
 }
 
+variable "domain" {
+  default     = "example.com"
+  description = "domain for krateo ingress"
+}
+
 variable "gke_username" {
   default     = ""
   description = "gke username"
@@ -59,6 +64,11 @@ resource "google_container_node_pool" "primary_nodes" {
     metadata = {
       disable-legacy-endpoints = "true"
     }
+  }
+
+  # Install krateo on the cluster
+  provisioner "local-exec" {
+    command = "printf ${var.domain} | krateo init"
   }
 }
 
